@@ -22,9 +22,11 @@
 
 using namespace kernel;
 
-namespace dispatch {
-bool InCode(uint32_t va);  // cpu/dispatch.cpp
-}
+// the SDK no longer has dispatch::InCode (removed 2026-10-18, "Game code builds into a DLL"). Only the perf diagnostic
+// below uses it, to pick return addresses off the stack, so the range of the xbe's .text is enough
+namespace {
+bool LooksLikeCode(uint32_t va) { return va >= 0x11000 && va < 0x282FE0; }
+}  // namespace
 
 // configs written before the SDK knew the name
 #ifndef SYM_D3DDevice_BeginPush
@@ -443,7 +445,7 @@ void LogBlockOnce(X86Context& ctx, uint32_t data) {
     uint32_t n = 0;
     for (uint32_t i = 0; i < 32 && n < 4; i++) {
         uint32_t v = R32(ctx.esp + i * 4);
-        if (dispatch::InCode(v)) code[n++] = v;
+        if (LooksLikeCode(v)) code[n++] = v;
     }
     LOGI("d3d: BlockOnResource on surface %08X, stack %08X %08X %08X %08X", data, code[0], code[1], code[2], code[3]);
 }
