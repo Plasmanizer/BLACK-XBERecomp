@@ -63,11 +63,12 @@ bool WriteAll(const fs::path& path, const std::vector<uint8_t>& data) {
     return bool(f);
 }
 
+// "Profile", and "Profilo" which the Europe release uses
 bool IsProfileName(const fs::path& name) {
     std::string s = name.string();
     if (s.size() != 7) return false;
     std::transform(s.begin(), s.end(), s.begin(), [](unsigned char c) { return char(std::tolower(c)); });
-    return s == "profile";
+    return s == "profile" || s == "profilo";
 }
 
 Outcome ResignOne(const fs::path& file) {
@@ -132,8 +133,8 @@ void ResignSaves() {
         std::string name = (r.file.parent_path().filename() / r.file.filename()).string();
         switch (r.outcome) {
             case Outcome::Signed:
-                LOGR("Save %s: signature from another console, signed for this one (original kept as Profile.xbox.bak)",
-                     name.c_str());
+                LOGR("Save %s: signature from another console, signed for this one (original kept as %s.xbox.bak)",
+                     name.c_str(), r.file.filename().string().c_str());
                 break;
             case Outcome::Failed: LOGE("Save %s: signature is wrong and could not be replaced", name.c_str()); break;
             case Outcome::AlreadyValid:

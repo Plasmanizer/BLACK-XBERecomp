@@ -20,8 +20,8 @@ struct Result {
     Outcome outcome;
 };
 
-// the Profile files below title_dir (UDATA/45410083), one folder level down; each wrong one is saved beside itself as
-// Profile.xbox.bak first, unless that copy already exists
+// the Profile (Europe: Profilo) files below title_dir (UDATA/45410083), one folder level down; each wrong one is saved
+// beside itself as <name>.xbox.bak first, unless that copy already exists
 std::vector<Result> ResignProfiles(const std::filesystem::path& title_dir);
 
 // the port's save folder, logged; call after the settings load and before the game boots
